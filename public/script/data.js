@@ -195,16 +195,34 @@ d3.csv(categoryCSV).then(categoryData => {
           .attr("height", (d, i) => escalaGeneroY(series[x][i][0]) - escalaGeneroY(series[x][i][1]))
         })
 
+        grupos.append("text")
+        .attr("class", "porcentaje")
+        .attr("x", (d, i) => escalaGeneroXBar(i)-50)
+        .attr("y", 335)
+        .text(d => "Male: " + Math.round(d.Male * 100) / 100 + "% Female: " + Math.round(d.Female * 100) / 100 + "%")
+        .attr("opacity", 0)
+
+
         return grupos.attr("transform", (_, i) => `translate(${20*i}, 40)`)
 
 
 
       })
 
+      grupos.on('mouseover', (event, d, a) => {
+        grupos.selectAll(".porcentaje")
+        .attr('opacity', (dato) => {
+          return dato.Category == d.Category ? '1' : '0';
+        })
+        })
+      grupos.on('mouseout',(event, d, a) => {
+        grupos.selectAll(".porcentaje")
+        .attr('opacity',0)
+        })
       grupos.on("click", (event, d, a) => {
 
-        grupos.attr('fill', (dato) => {
-            return dato.Category == d.Category ? 'tomato' : 'skyblue';
+        grupos.attr('opacity', (dato) => {
+            return dato.Category == d.Category ? '1' : '0.3';
         })
 
     })
@@ -307,6 +325,9 @@ function createVis1(array) {
               .style("dominant-baseline", "middle")
               .style("text-anchor", "middle")
               .text(d => d.Artist.slice(0, 8))
+          
+          
+          
 
           // retornamos nuestros grupo ques aprovechamos de aplicar una traslación a 
           // cada uno en el eje X.
